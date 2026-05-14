@@ -20,7 +20,7 @@ I chose [**Electron**](https://electronjs.org) as the framework because it allow
 
 <table>
 <tr><th align="center">Main UI</th></tr>
-<tr><td align="center"><img src="https://github.com/Arza707/Sholat-Reminder-App/raw/main/AssetsForReadme/ReadmeUI/MainUI.jpeg" width="100%" style="max-width: 420px; border-radius: 16px;"></td></tr>
+<tr><td align="center"><img src="https://github.com/Arza707/Sholat-Reminder-App/raw/main/AssetsForReadme/ReadmeUI/MainUI.jpeg" width="200px" style="max-width: 420px; border-radius: 16px;"></td></tr>
 </table>
 
 <table>
