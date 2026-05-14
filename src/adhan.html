@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self';"> 
+    <title>Adzan</title>
+    <style>
+      :root {
+        --bg: rgba(19, 19, 28, 0.92);
+        --border: rgba(201, 169, 110, 0.22);
+        --accent: #c9a96e;
+        --text: #e8e4d9;
+        --muted: rgba(232, 228, 217, 0.72);
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        background: transparent;
+        font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+        color: var(--text);
+      }
+      .card {
+        margin: 0;
+        padding: 14px 14px 12px;
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        box-shadow: 0 12px 40px rgba(0,0,0,0.45);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+      }
+      .top {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 10px;
+      }
+      .badge {
+        font-size: 11px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      .close {
+        border: 1px solid rgba(255,255,255,0.12);
+        background: rgba(0,0,0,0.12);
+        color: var(--muted);
+        width: 28px;
+        height: 28px;
+        border-radius: 8px;
+        cursor: pointer;
+        line-height: 26px;
+        padding: 0;
+      }
+      .close:hover { color: var(--text); border-color: rgba(255,255,255,0.22); }
+      .title {
+        margin-top: 8px;
+        font-size: 22px;
+        font-weight: 700;
+        color: var(--accent);
+        line-height: 1.1;
+      }
+      .time {
+        margin-top: 6px;
+        font-size: 13px;
+        color: var(--muted);
+      }
+      .desc {
+        margin-top: 10px;
+        font-size: 13px;
+        color: var(--text);
+      }
+      .arabic-text {
+        margin-top: 2px;
+        font-size: 14px;
+        color: var(--muted);
+        direction: rtl;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <div class="top">
+      <div class="badge" id="badge">Prayer Time</div>
+        <button class="close" aria-label="Close">✕</button>
+      </div>
+      <div class="title" id="name">Sholat</div>
+      <div class="arabic-text" id="arabic-name"></div>
+
+      <div class="time" id="time"></div>
+      <div class="desc" id="desc">Allahu Akbar — It's time for prayer.</div>
+    </div>
+    <script src="adhan.js"></script>
+  </body>
+</html>

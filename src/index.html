@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; script-src 'self'; connect-src 'self' https://api.aladhan.com;">
+<title id="app-title">Sholat Reminder</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link id="google-fonts" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Cairo:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- Titlebar custom -->
+<div class="titlebar" id="titlebar">
+  <div class="titlebar-left">
+    <div class="app-dot"></div>
+    <span class="app-name"> Shorem · Sholat Reminder</span>
+  </div>
+  <div class="titlebar-actions">
+    <button class="tb-btn" id="btn-minimize" title="Minimize">─</button>
+    <button class="tb-btn tb-close" id="btn-close" title="Sembunyikan ke tray">✕</button>
+  </div>
+</div>
+
+<!-- In-app notification -->
+<div class="in-app-notification" id="in-app-notification">
+  <span id="notification-text"></span>
+</div>
+
+<!-- Main content -->
+<div class="container">
+
+  <!-- Header kota & tanggal -->
+  <div class="location-bar">
+    <div class="location-info">
+      <span class="location-icon">◈</span>
+      <div>
+        <div class="city-name" id="city-display">Tangerang, Indonesia</div>
+        <div class="hijri-date" id="hijri-date">─ ─ ─</div>
+      </div>
+    </div>
+    <button class="settings-btn" id="btn-settings" title="Pengaturan">⚙</button>
+  </div>
+
+  <!-- Next prayer countdown -->
+  <div class="next-prayer-card" id="next-prayer-card">
+    <div class="next-label" id="next-label">Waktu Sholat Berikutnya</div>
+    <div class="next-prayer-name" id="next-prayer-name">─ ─ ─</div>
+    <div class="countdown" id="countdown">
+      <span class="cd-block"><span class="cd-num" id="cd-h">00</span><span class="cd-unit">jam</span></span>
+      <span class="cd-sep">:</span>
+      <span class="cd-block"><span class="cd-num" id="cd-m">00</span><span class="cd-unit">menit</span></span>
+      <span class="cd-sep">:</span>
+      <span class="cd-block"><span class="cd-num" id="cd-s">00</span><span class="cd-unit">detik</span></span>
+      <div class="arrived-content" id="arrived-content">
+        <span class="arrived-label" id="arrived-label">Waktunya</span>
+        <span class="arrived-name" id="arrived-name">Subuh</span>
+      </div>
+    </div>
+    <div class="prayer-time-display" id="next-prayer-time">─:── ──</div>
+  </div>
+
+  <!-- Progress bar hari -->
+  <div class="progress-container">
+    <div class="progress-bar" id="progress-bar"></div>
+  </div>
+
+  <!-- Daftar waktu sholat -->
+  <div class="prayer-list" id="prayer-list">
+    <!-- diisi JS -->
+  </div>
+
+  <!-- Tanggal masehi -->
+  <div class="footer-date">
+    <span id="gregorian-date">─ ─ ─</span>
+    <div id="app-meta"></div>
+  </div>
+
+</div>
+
+<!-- Settings Panel -->
+  <div class="settings-panel" id="settings-panel">
+    <div class="settings-header">
+      <span id="settings-title">Pengaturan</span>
+      <button id="close-settings">✕</button>
+    </div>
+
+
+
+
+  <div class="setting-group">
+    <label id="label-country">Negara</label>
+    <select id="country-select" required>
+      <option value="">Pilih Negara</option>
+    </select>
+  </div>
+  <div class="setting-group" id="province-group" style="display:none">
+    <label id="label-province">Provinsi / Negeri</label>
+    <select id="province-select" required>
+      <option value="">Pilih Provinsi</option>
+    </select>
+  </div>
+  <div class="setting-group" id="city-group" style="display:none">
+    <label id="label-city">Kota / Kabupaten</label>
+    <select id="city-select" required>
+      <option value="">Pilih Kota</option>
+    </select>
+  </div>
+  <div class="setting-group" id="district-group" style="display:none">
+    <label id="label-district">Kecamatan</label>
+    <select id="district-select">
+      <option value="">Pilih Kecamatan (opsional)</option>
+    </select>
+  </div>
+
+  <div class="setting-group">
+    <label id="label-method">Metode Perhitungan</label>
+    <select id="method-select">
+      <option value="">Memuat...</option>
+    </select>
+  </div>
+
+  <hr class="settings-divider" />
+
+  <div class="setting-group">
+    <label id="label-language">Bahasa</label>
+    <select id="language-select">
+      <option value="id">Indonesia</option>
+      <option value="en">English</option>
+    </select>
+  </div>
+
+  <div class="setting-group">
+    <label id="label-adhan-notif">Notifikasi Adzan</label>
+    <div class="toggle-row" id="notif-toggles">
+      <!-- diisi JS -->
+    </div>
+  </div>
+
+
+
+  <div class="setting-group">
+    <label id="label-reminder">Notif Pengingat (menit sebelum)</label>
+    <select id="reminder-minutes">
+      <option value="0">Tidak ada</option>
+      <option value="5">5 menit</option>
+      <option value="10" selected>10 menit</option>
+      <option value="15">15 menit</option>
+      <option value="30">30 menit</option>
+    </select>
+  </div>
+
+
+  <div class="setting-group">
+    <label id="label-optimization">Mode Optimasi (hemat RAM)</label>
+    <div class="toggle-row">
+      <label class="toggle-item" id="toggle-optimization-wrapper">
+        <input type="checkbox" id="optimization-checkbox">
+        <span id="toggle-optimization-label">Mode Optimasi (hemat RAM)</span>
+      </label>
+    </div>
+  </div>
+
+  <div class="setting-group">
+    <label id="label-test-notif">Test Notifikasi</label>
+    <button class="save-btn" id="test-adhan">Test Pop-up Adzan</button>
+    <button class="save-btn" id="test-reminder" style="margin-top:6px">Test Notifikasi Pengingat</button>
+  </div>
+
+  <div class="setting-group">
+    <label id="label-donation">Donasi</label>
+    <button class="save-btn" id="btn-donate">Donasi via Saweria</button>
+  </div>
+
+  <hr class="settings-divider" />
+
+  <button class="save-btn save-btn-primary" id="save-settings">Simpan & Tutup</button>
+  <div id="app-meta-settings" class="app-meta-footer">-</div>
+</div>
+
+<script src="data/regions.js"></script>
+<script src="prayer.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,58 @@
+{
+  "name": "sholat-reminder",
+  "version": "1.0.0",
+  "description": "Pengingat Waktu Sholat - Windows Desktop App",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder --win portable",
+    "build-installer": "electron-builder --win nsis"
+  },
+  "devDependencies": {
+    "electron": "^28.0.0",
+    "electron-builder": "^24.9.1"
+  },
+  "build": {
+    "appId": "com.sholat.reminder",
+    "productName": "Sholat Reminder",
+    "copyright": "Gratis untuk semua Muslim",
+    "win": {
+      "icon": "assets/icon.ico",
+      "target": [
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "requestedExecutionLevel": "asInvoker"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "installerIcon": "assets/icon.ico",
+      "uninstallerIcon": "assets/icon.ico",
+      "installerHeaderIcon": "assets/icon.ico",
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Sholat Reminder",
+      "runAfterFinish": true
+    },
+    "files": [
+      "**/*",
+      "!node_modules/.cache",
+      "!*.md"
+    ],
+    "extraResources": [
+      {
+        "from": "assets/",
+        "to": "assets/",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ]
+  }
+}
+

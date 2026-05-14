@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self';">
+<title>Hint Sholat</title>
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background: transparent;
+    font-family: 'Cairo', sans-serif;
+    color: #e8e4d9;
+  }
+  html, body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background: transparent;
+    overflow: hidden;
+    border-radius: 24px;
+  }
+  .hint-card {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    padding: 14px 18px;
+    background: rgba(12, 12, 18, 0.96);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 24px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.28);
+    backdrop-filter: blur(18px);
+    transform: translateY(-16px) scale(0.92);
+    opacity: 0;
+    transition: transform 0.22s ease, opacity 0.22s ease;
+    overflow: hidden;
+  }
+  .hint-card::before,
+  .hint-card::after {
+    content: '';
+    position: absolute;
+    width: 40px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(201, 169, 110, 0.95), transparent);
+    left: 18px;
+    opacity: 0.85;
+  }
+  .hint-card::before {
+    top: 12px;
+  }
+  .hint-card::after {
+    bottom: 12px;
+  }
+  .hint-card .hint-line {
+    position: absolute;
+    right: 18px;
+    width: 2px;
+    height: 22px;
+    background: linear-gradient(180deg, transparent, rgba(201, 169, 110, 0.95), transparent);
+    opacity: 0.85;
+  }
+  .hint-card .hint-line.bottom {
+    bottom: 14px;
+    right: 18px;
+  }
+  .hint-card .hint-line.top {
+    top: 14px;
+    right: 18px;
+  }
+  .hint-card.visible {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+  .hint-title {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #c9a96e;
+  }
+  .hint-body {
+    margin-top: 6px;
+    font-size: 13px;
+    line-height: 1.5;
+    color: #f4f2eb;
+    max-height: 54px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .hint-body.hidden {
+    display: none;
+  }
+</style>
+</head>
+<body>
+  <div class="hint-card" id="hint-card">
+    <div class="hint-line top"></div>
+    <div class="hint-line bottom"></div>
+    <div class="hint-title" id="hint-title">Sholat Reminder</div>
+    <div class="hint-body" id="hint-body">Gerakkan kursor ke bagian atas layar untuk melihat info sholat berikutnya.</div>
+  </div>
+
+  <script src="hint-renderer.js"></script>
+</body>
+</html>
