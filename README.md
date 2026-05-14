@@ -1,29 +1,44 @@
-# Shorem - Sholat Reminder App
+<p align="center">
+  <img src="https://github.com/Arza707/Sholat-Reminder-App/raw/main/assets/icon.png" width="80" alt="Shorem Logo">
+</p>
+
+<h1 align="center">Shorem - Sholat Reminder App</h1>
+
+<p align="center">
+  Created by <strong>Arza Maulana Zafar</strong>
+  <br>
+  <a href="https://github.com/Arza707"><img src="https://img.shields.io/badge/GitHub-Arza707-181717?style=flat-square&logo=github" alt="GitHub"></a>
+</p>
 
 **Shorem (Sholat Reminder)** is a Windows prayer time reminder app with an elegant dark design, available for **ASEAN countries** (Indonesia, Malaysia, Singapore, Brunei, Philippines, Thailand). It displays prayer schedules based on city coordinates, real-time countdown to the next prayer, Hijri calendar, native Windows notifications, and Adhan popup.
 
-I chose **Electron** as the framework because it allows me to build a desktop app using only **HTML, CSS, and JavaScript** — no need to learn other languages like Next.js, React, or Vue.js. With Electron, web code runs directly as a native desktop application.
+I chose [**Electron**](https://electronjs.org) as the framework because it allows me to build a desktop app using only **HTML, CSS, and JavaScript** — no need to learn other languages like Next.js, React, or Vue.js. With [Electron](https://electronjs.org), web code runs directly as a native desktop application.
 
 ---
 
 ### Preview UI
 
-| Main UI |
-|---------|
-| ![MainUI](https://github.com/Arza707/Sholat-Reminder-App/raw/main/AssetsForReadme/ReadmeUI/MainUI.jpeg) |
+<table>
+<tr><th align="center">Main UI</th></tr>
+<tr><td align="center"><img src="https://github.com/Arza707/Sholat-Reminder-App/raw/main/AssetsForReadme/ReadmeUI/MainUI.jpeg" width="100%" style="max-width: 420px; border-radius: 16px;"></td></tr>
+</table>
 
 <table>
 <tr><th colspan="3" align="center">Settings</th></tr>
 <tr>
-<td><img src="https://github.com/Arza707/Sholat-Reminder-App/raw/main/AssetsForReadme/ReadmeUI/SettingsUI.jpeg" alt="SettingsUI"></td>
-<td><img src="https://github.com/Arza707/Sholat-Reminder-App/raw/main/AssetsForReadme/ReadmeUI/SettingsUI-(ChooseCountry).jpeg" alt="SettingsUI"></td>
-<td><img src="https://github.com/Arza707/Sholat-Reminder-App/raw/main/AssetsForReadme/ReadmeUI/SettingsUI-(ScrollDown).jpeg" alt="SettingsUI"></td>
+<td align="center"><img src="https://github.com/Arza707/Sholat-Reminder-App/raw/main/AssetsForReadme/ReadmeUI/SettingsUI.jpeg" width="100%" style="max-width: 420px; border-radius: 16px;"></td>
+<td align="center"><img src="https://github.com/Arza707/Sholat-Reminder-App/raw/main/AssetsForReadme/ReadmeUI/SettingsUI-(ChooseCountry).jpeg" width="100%" style="max-width: 420px; border-radius: 16px;"></td>
+<td align="center"><img src="https://github.com/Arza707/Sholat-Reminder-App/raw/main/AssetsForReadme/ReadmeUI/SettingsUI-(ScrollDown).jpeg" width="100%" style="max-width: 420px; border-radius: 16px;"></td>
 </tr>
 </table>
 
-| Notification Feature | Countdown Feature |
-|----------------------|-------------------|
-| ![NotificationFeature](https://github.com/Arza707/Sholat-Reminder-App/raw/main/AssetsForReadme/ReadmeUI/NotificationFeature.jpeg) | ![CountdownFeature](https://github.com/Arza707/Sholat-Reminder-App/raw/main/AssetsForReadme/ReadmeUI/CountdownFeature.jpeg) |
+<table>
+<tr><th align="center">Notification Feature</th><th align="center">Countdown Feature</th></tr>
+<tr>
+<td align="center"><img src="https://github.com/Arza707/Sholat-Reminder-App/raw/main/AssetsForReadme/ReadmeUI/NotificationFeature.jpeg" width="100%" style="max-width: 420px; border-radius: 16px;"></td>
+<td align="center"><img src="https://github.com/Arza707/Sholat-Reminder-App/raw/main/AssetsForReadme/ReadmeUI/CountdownFeature.jpeg" width="100%" style="max-width: 420px; border-radius: 16px;"></td>
+</tr>
+</table>
 
 ---
 
