@@ -18,3 +18,8 @@ ipcRenderer.on('hint-show', () => {
 ipcRenderer.on('hint-hide', () => {
   card.classList.remove('visible');
 });
+
+ipcRenderer.on('hint-appearance', (event, appearance) => {
+  document.body.classList.toggle('dynamic', appearance.interfaceMode === 'dynamic');
+  document.body.classList.toggle('light', appearance.theme === 'light');
+});

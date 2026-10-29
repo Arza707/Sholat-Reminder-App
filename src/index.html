@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; script-src 'self'; connect-src 'self' https://api.aladhan.com;">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; script-src 'self'; connect-src 'self' https://api.aladhan.com https://api.myquran.com;">
 <title id="app-title">Sholat Reminder</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link id="google-fonts" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Cairo:wght@300;400;600&display=swap" rel="stylesheet">
@@ -132,6 +132,14 @@
   </div>
 
   <div class="setting-group">
+    <label id="label-theme">Tema</label>
+    <select id="theme-select">
+      <option value="dark">Gelap</option>
+      <option value="light">Terang</option>
+    </select>
+  </div>
+
+  <div class="setting-group">
     <label id="label-adhan-notif">Notifikasi Adzan</label>
     <div class="toggle-row" id="notif-toggles">
       <!-- diisi JS -->
@@ -151,15 +159,33 @@
     </select>
   </div>
 
-
   <div class="setting-group">
-    <label id="label-optimization">Mode Optimasi (hemat RAM)</label>
+    <label id="label-hint-show">Pop-up info waktu sholat berikutnya</label>
     <div class="toggle-row">
-      <label class="toggle-item" id="toggle-optimization-wrapper">
-        <input type="checkbox" id="optimization-checkbox">
-        <span id="toggle-optimization-label">Mode Optimasi (hemat RAM)</span>
+      <label class="toggle-item" id="toggle-hint-show-wrapper">
+        <input type="checkbox" id="hint-show-checkbox">
+        <span id="toggle-hint-show-label">On</span>
       </label>
     </div>
+  </div>
+
+  <div class="setting-group mode-setting">
+    <label id="label-mode">Mode Tampilan & Performa</label>
+    <div class="mode-segment" id="mode-segment" role="group" aria-label="Mode aplikasi">
+      <button class="mode-option" type="button" data-mode="dynamic" aria-pressed="false">
+        <span class="mode-option-title" id="mode-dynamic-title">Dynamic</span>
+        <span class="mode-option-caption" id="mode-dynamic-caption">Slick & hidup</span>
+      </button>
+      <button class="mode-option" type="button" data-mode="normal" aria-pressed="false">
+        <span class="mode-option-title" id="mode-normal-title">Normal</span>
+        <span class="mode-option-caption" id="mode-normal-caption">Seimbang</span>
+      </button>
+      <button class="mode-option" type="button" data-mode="optimize" aria-pressed="false">
+        <span class="mode-option-title" id="mode-optimize-title">Optimize</span>
+        <span class="mode-option-caption" id="mode-optimize-caption">Hemat RAM</span>
+      </button>
+    </div>
+    <div class="mode-description" id="mode-description"></div>
   </div>
 
   <div class="setting-group">

@@ -11,7 +11,7 @@
     padding: 0;
     overflow: hidden;
     background: transparent;
-    font-family: 'Cairo', sans-serif;
+    font-family: 'Cairo', 'Segoe UI', sans-serif;
     color: #e8e4d9;
   }
   html, body {
@@ -24,84 +24,158 @@
     border-radius: 24px;
   }
   .hint-card {
+    --hint-accent: #d6b77d;
+    --hint-accent-soft: rgba(180, 155, 225, 0.3);
     width: 100%;
     height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: center;
     position: relative;
-    padding: 14px 18px;
-    background: rgba(12, 12, 18, 0.96);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 24px;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.28);
-    backdrop-filter: blur(18px);
-    transform: translateY(-16px) scale(0.92);
+    padding: 12px 20px;
+    background:
+      radial-gradient(ellipse at 100% 0%, rgba(147, 126, 201, 0.2), transparent 48%),
+      linear-gradient(125deg, rgba(20, 19, 30, 0.97), rgba(27, 24, 39, 0.96) 58%, rgba(19, 22, 32, 0.97));
+    border: 1px solid rgba(191, 170, 230, 0.2);
+    border-radius: 22px;
+    box-shadow: 0 18px 48px rgba(0, 0, 0, 0.32), inset 0 1px rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(22px) saturate(1.25);
+    transform: translateY(-18px) scale(0.94);
     opacity: 0;
-    transition: transform 0.22s ease, opacity 0.22s ease;
+    transition:
+      transform 520ms cubic-bezier(0.2, 0.85, 0.25, 1),
+      opacity 380ms ease,
+      border-color 350ms ease,
+      box-shadow 450ms ease,
+      background 450ms ease;
     overflow: hidden;
+    will-change: transform, opacity;
+    pointer-events: auto;
   }
-  .hint-card::before,
+  .hint-card::before {
+    content: '';
+    position: absolute;
+    inset: -80% auto -80% -45%;
+    width: 38%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.07), transparent);
+    transform: rotate(20deg) translateX(-180%);
+    transition: transform 900ms cubic-bezier(0.2, 0.75, 0.25, 1);
+    pointer-events: none;
+  }
   .hint-card::after {
     content: '';
     position: absolute;
-    width: 40px;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, rgba(201, 169, 110, 0.95), transparent);
-    left: 18px;
-    opacity: 0.85;
-  }
-  .hint-card::before {
-    top: 12px;
-  }
-  .hint-card::after {
-    bottom: 12px;
-  }
-  .hint-card .hint-line {
-    position: absolute;
-    right: 18px;
-    width: 2px;
-    height: 22px;
-    background: linear-gradient(180deg, transparent, rgba(201, 169, 110, 0.95), transparent);
-    opacity: 0.85;
-  }
-  .hint-card .hint-line.bottom {
-    bottom: 14px;
-    right: 18px;
-  }
-  .hint-card .hint-line.top {
-    top: 14px;
-    right: 18px;
+    left: 20px;
+    right: 20px;
+    bottom: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--hint-accent), #a898d7, transparent);
+    opacity: 0.72;
+    transform: scaleX(0.62);
+    transform-origin: center;
+    transition: transform 450ms ease, opacity 350ms ease;
+    pointer-events: none;
   }
   .hint-card.visible {
     transform: translateY(0) scale(1);
     opacity: 1;
   }
+  .hint-card.visible:hover {
+    transform: translateY(-3px) scale(1.015);
+    border-color: rgba(219, 194, 147, 0.52);
+    box-shadow: 0 24px 58px rgba(0, 0, 0, 0.4), 0 0 28px var(--hint-accent-soft), inset 0 1px rgba(255, 255, 255, 0.12);
+  }
+  .hint-card.visible:hover::before {
+    transform: rotate(20deg) translateX(520%);
+  }
+  .hint-card.visible:hover::after {
+    transform: scaleX(1);
+    opacity: 1;
+  }
   .hint-title {
     font-size: 12px;
     font-weight: 700;
-    letter-spacing: 0.16em;
+    letter-spacing: 0.13em;
     text-transform: uppercase;
-    color: #c9a96e;
+    color: var(--hint-accent);
+    text-shadow: 0 2px 18px rgba(214, 183, 125, 0.18);
+    transition: letter-spacing 350ms ease, color 350ms ease, transform 450ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .hint-card.visible:hover .hint-title {
+    letter-spacing: 0.17em;
+    transform: translateX(2px);
   }
   .hint-body {
-    margin-top: 6px;
+    margin-top: 5px;
     font-size: 13px;
     line-height: 1.5;
-    color: #f4f2eb;
+    color: rgba(247, 244, 251, 0.92);
     max-height: 54px;
     overflow: hidden;
     text-overflow: ellipsis;
+    transition: color 350ms ease, transform 450ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .hint-card.visible:hover .hint-body {
+    color: #fff;
+    transform: translateX(2px);
   }
   .hint-body.hidden {
     display: none;
+  }
+  body.dynamic .hint-card {
+    --hint-accent: #e0c58f;
+    --hint-accent-soft: rgba(173, 148, 226, 0.4);
+    background:
+      radial-gradient(ellipse at 100% 0%, rgba(161, 139, 218, 0.26), transparent 46%),
+      radial-gradient(ellipse at 0% 100%, rgba(201, 169, 110, 0.12), transparent 48%),
+      linear-gradient(125deg, rgba(21, 20, 32, 0.97), rgba(34, 29, 49, 0.97) 56%, rgba(19, 23, 35, 0.97));
+    border-color: rgba(194, 174, 231, 0.28);
+  }
+  body.dynamic .hint-card.visible {
+    animation: hint-arrive 700ms cubic-bezier(0.2, 0.85, 0.25, 1) both;
+  }
+  body.dynamic .hint-card.visible:hover {
+    border-color: rgba(226, 204, 157, 0.65);
+    box-shadow: 0 25px 64px rgba(0, 0, 0, 0.44), 0 0 34px rgba(157, 134, 211, 0.25), inset 0 1px rgba(255, 255, 255, 0.13);
+  }
+  body.light .hint-card {
+    --hint-accent: #80602d;
+    --hint-accent-soft: rgba(112, 91, 150, 0.2);
+    color: #282432;
+    background: linear-gradient(130deg, rgba(255, 255, 255, 0.98), rgba(246, 243, 251, 0.97));
+    border-color: rgba(104, 85, 139, 0.22);
+    box-shadow: 0 18px 48px rgba(42, 34, 58, 0.18), inset 0 1px rgba(255, 255, 255, 0.9);
+  }
+  body.light .hint-body {
+    color: #4a4555;
+  }
+  body.light .hint-card.visible:hover .hint-body {
+    color: #302b39;
+  }
+  body.light.dynamic .hint-card {
+    background:
+      radial-gradient(ellipse at 100% 0%, rgba(170, 151, 212, 0.25), transparent 46%),
+      radial-gradient(ellipse at 0% 100%, rgba(201, 169, 110, 0.15), transparent 48%),
+      linear-gradient(125deg, rgba(255, 255, 255, 0.98), rgba(246, 241, 252, 0.97) 56%, rgba(240, 244, 250, 0.98));
+    border-color: rgba(126, 101, 173, 0.27);
+  }
+  @keyframes hint-arrive {
+    0% { filter: blur(4px); }
+    65% { filter: blur(0); }
+    100% { filter: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      scroll-behavior: auto !important;
+      transition-duration: 0.01ms !important;
+    }
   }
 </style>
 </head>
 <body>
   <div class="hint-card" id="hint-card">
-    <div class="hint-line top"></div>
-    <div class="hint-line bottom"></div>
     <div class="hint-title" id="hint-title">Sholat Reminder</div>
     <div class="hint-body" id="hint-body">Gerakkan kursor ke bagian atas layar untuk melihat info sholat berikutnya.</div>
   </div>

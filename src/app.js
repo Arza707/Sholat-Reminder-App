@@ -25,6 +25,7 @@ const METHODS_BY_COUNTRY = {
     { id: 3, name: 'Muslim World League' },
     { id: 104, name: 'MABIMS Method' },
     { id: 20, name: 'Kementrian Agama (Kemenag) RI' },
+    { id: 105, name: 'Lembaga Falakiyah Nahdlatul Ulama (LF PBNU) — 20°/18°' },
   ],
   MY: [
     { id: 3, name: 'Muslim World League' },
@@ -78,9 +79,20 @@ const I18N = {
       city: 'Kota / Kabupaten',
       district: 'Kecamatan',
       language: 'Bahasa',
+      theme: 'Tema',
+      themes: { dark: 'Gelap', light: 'Terang' },
       method: 'Metode Perhitungan',
       adhanNotif: 'Notifikasi Adzan',
       reminder: 'Notif Pengingat (menit sebelum)',
+      hintShow: 'Pop-up info waktu sholat berikutnya',
+      mode: 'Mode Tampilan & Performa',
+      modeNames: { dynamic: 'Dynamic', normal: 'Normal', optimize: 'Optimize Mode' },
+      modeCaptions: { dynamic: 'Slick & hidup', normal: 'Seimbang', optimize: 'Hemat RAM' },
+      modeDescriptions: {
+        dynamic: 'Tampilan dinamis dengan aksen bercahaya dan gerakan halus.',
+        normal: 'Tampilan standar dengan pembaruan waktu setiap detik.',
+        optimize: 'Kurangi animasi dan pembaruan layar untuk menghemat RAM.',
+      },
       testNotif: 'Test Notifikasi',
       donation: 'Donasi',
       optimization: 'Mode Optimasi (hemat RAM)',
@@ -121,9 +133,20 @@ const I18N = {
       city: 'City / Regency',
       district: 'Subdistrict',
       language: 'Language',
+      theme: 'Theme',
+      themes: { dark: 'Dark', light: 'Light' },
       method: 'Calculation Method',
       adhanNotif: 'Adhan Notifications',
       reminder: 'Reminder Notification (minutes before)',
+      hintShow: 'Next prayer countdown pop-up',
+      mode: 'Appearance & Performance',
+      modeNames: { dynamic: 'Dynamic', normal: 'Normal', optimize: 'Optimize Mode' },
+      modeCaptions: { dynamic: 'Fluid & lively', normal: 'Balanced', optimize: 'Save RAM' },
+      modeDescriptions: {
+        dynamic: 'A lively interface with soft glow and fluid motion.',
+        normal: 'Standard appearance with per-second updates.',
+        optimize: 'Reduce motion and screen updates to save RAM.',
+      },
       testNotif: 'Test Notification',
       donation: 'Donate',
       optimization: 'Optimization Mode (save RAM)',
@@ -353,6 +376,8 @@ function loadState() {
     hintShow: true,
     cpuSaver: false,
     optimization: false,
+    interfaceMode: 'normal',
+    theme: 'dark',
   };
   try {
     const saved = localStorage.getItem('sholatState');
@@ -368,7 +393,16 @@ function loadState() {
           parsed.district = '';
         }
       }
-      return { ...defaults, ...parsed };
+      const interfaceMode = ['dynamic', 'normal', 'optimize'].includes(parsed.interfaceMode)
+        ? parsed.interfaceMode
+        : (parsed.optimization ? 'optimize' : 'normal');
+      return {
+        ...defaults,
+        ...parsed,
+        interfaceMode,
+        theme: parsed.theme === 'light' ? 'light' : 'dark',
+        optimization: interfaceMode === 'optimize',
+      };
     }
   } catch {}
   return defaults;
@@ -403,6 +437,7 @@ function init() {
   applyLanguage();
   applySettings();
   setupUI();
+  sendHintAppearance();
   loadAppMeta();
   calculateAndRender();
   startCountdown();
@@ -503,12 +538,20 @@ function applyLanguage() {
   setText('label-city', t.labels.city);
   setText('label-district', t.labels.district);
   setText('label-language', t.labels.language);
+  setText('label-theme', t.labels.theme);
   setText('label-method', t.labels.method);
   setText('label-adhan-notif', t.labels.adhanNotif);
   setText('label-reminder', t.labels.reminder);
+  setText('label-hint-show', t.labels.hintShow);
+  setText('label-mode', t.labels.mode);
+  setText('mode-dynamic-title', t.labels.modeNames.dynamic);
+  setText('mode-normal-title', t.labels.modeNames.normal);
+  setText('mode-optimize-title', t.labels.modeNames.optimize);
+  setText('mode-dynamic-caption', t.labels.modeCaptions.dynamic);
+  setText('mode-normal-caption', t.labels.modeCaptions.normal);
+  setText('mode-optimize-caption', t.labels.modeCaptions.optimize);
   setText('label-test-notif', t.labels.testNotif);
   setText('label-donation', t.labels.donation);
-  setText('label-optimization', t.labels.optimization);
   setText('test-adhan', t.testAdhanButton);
   setText('test-reminder', t.testReminderButton);
   setText('btn-donate', t.donateButton);
@@ -523,7 +566,7 @@ function applyLanguage() {
   setToggleText('toggle-hint-blur-label', t.toggle.on, t.toggle.off, state.hintBlur);
   setToggleText('toggle-hint-show-label', t.toggle.on, t.toggle.off, state.hintShow);
   setToggleText('toggle-cpu-saver-label', t.toggle.on, t.toggle.off, state.cpuSaver);
-  setText('toggle-optimization-label', t.labels.optimization);
+  updateModeControl();
 
 
   const btnSettings = document.getElementById('btn-settings');
@@ -538,6 +581,11 @@ function applyLanguage() {
       if (!option) return;
       option.textContent = value === '0' ? t.reminderOptions.none : `${value} ${t.reminderOptions.minutes}`;
     });
+  }
+  const themeSelect = document.getElementById('theme-select');
+  if (themeSelect) {
+    themeSelect.querySelector('option[value="dark"]').textContent = t.labels.themes.dark;
+    themeSelect.querySelector('option[value="light"]').textContent = t.labels.themes.light;
   }
 
   // Set countdown units
@@ -656,8 +704,12 @@ function hidePrayerArrived() {
 
 function applySettings() {
   document.getElementById('language-select').value = lang();
+  document.getElementById('theme-select').value = state.theme;
   document.getElementById('method-select').value = state.method;
   document.getElementById('reminder-minutes').value = state.remindMin;
+  const hintShowCheckbox = document.getElementById('hint-show-checkbox');
+  hintShowCheckbox.checked = state.hintShow !== false;
+  document.getElementById('toggle-hint-show-wrapper').classList.toggle('on', hintShowCheckbox.checked);
 
   updateCascading();
   populateMethodSelect(state.country);
@@ -666,14 +718,8 @@ function applySettings() {
   const label = RegionData.getLocationLabel(state.country, state.province, state.city, state.district);
   document.getElementById('city-display').textContent = label || t.cityFallback;
 
-  document.body.classList.toggle('optimized', !!state.optimization);
-  const gf = document.getElementById('google-fonts');
-  if (gf && state.optimization) gf.remove();
-
-  const optWrapper = document.getElementById('toggle-optimization-wrapper');
-  const optCb = optWrapper?.querySelector('input[type="checkbox"]');
-  if (optCb) optCb.checked = !!state.optimization;
-  if (optWrapper) optWrapper.classList.toggle('on', !!state.optimization);
+  applyTheme(state.theme, false);
+  applyInterfaceMode(state.interfaceMode, false);
 }
 
 let retryInterval = null;
@@ -692,7 +738,18 @@ async function calculateAndRender() {
   }
 
   try {
-    const result = await PrayerCalc.computeTimes(new Date(), lat, lng, locTz, Number(state.method));
+    const cityName = RegionData.getCity(state.city)?.name
+      || RegionData.getProvince(state.province)?.name
+      || '';
+    const result = await PrayerCalc.computeTimes(
+      new Date(),
+      lat,
+      lng,
+      locTz,
+      Number(state.method),
+      state.country,
+      cityName,
+    );
     prayers = result.prayers;
     hijriDate = result.hijriDate;
     // Friday: rename Dhuhr → Jumu'ah
@@ -909,19 +966,38 @@ function startCountdown() {
 
 
 
-function isIshaNowPassed(tolMs = 2 * 60 * 1000) {
-  if (!Array.isArray(prayers) || prayers.length === 0) return false;
-  const now = new Date();
-  const isha = prayers.find(p => p.key === 'isha');
-  if (!isha?.date) return false;
-  return (now.getTime() - isha.date.getTime()) > tolMs;
+function isPrayerSchedulePassed(now) {
+  return prayers.length > 0 && prayers.every(prayer => prayer.date && prayer.date <= now);
 }
 
-function shouldResyncForNextDay() {
-  // Fokus request user: setelah melewati Isya, langsung update jadwal ke besok.
-  // Masalah “stuck 00:00:00” biasanya karena jadwal yang tersisa masih mengarah ke subuh hari sebelumnya.
-  // Solusi: kalau Isya sudah lewat (toleransi 1 menit) maka resync, sekali.
-  return isIshaNowPassed(1 * 60 * 1000);
+function loadNextDayPrayerSchedule(now) {
+  const dayKey = `nextday_${now.getFullYear()}_${now.getMonth()}_${now.getDate()}`;
+  if (!window.__resyncNextDayDone) window.__resyncNextDayDone = new Set();
+  if (window.__resyncNextDayDone.size > 10) window.__resyncNextDayDone.clear();
+  if (window.__resyncNextDayDone.has(dayKey)) return;
+  window.__resyncNextDayDone.add(dayKey);
+
+  const tomorrow = new Date(now);
+  tomorrow.setDate(now.getDate() + 1);
+  const [lat, lng] = state.coords.split(',').map(Number);
+  const locTz = getLocationTimezoneMinutes() / 60;
+  const cityName = RegionData.getCity(state.city)?.name
+    || RegionData.getProvince(state.province)?.name
+    || '';
+
+  PrayerCalc.computeTimes(tomorrow, lat, lng, locTz, Number(state.method), state.country, cityName)
+    .then(result => {
+      prayers = result.prayers;
+      hijriDate = result.hijriDate;
+      renderPrayerList();
+      renderDates();
+      updateNextPrayer();
+      updateProgress();
+      scheduleNextNotification();
+    })
+    .catch(error => {
+      console.error('Gagal memuat jadwal sholat hari berikutnya:', error);
+    });
 }
 
 function updateCountdown() {
@@ -929,51 +1005,14 @@ function updateCountdown() {
 
   if (!prayers || prayers.length === 0) return;
 
-  // Resync cepat setelah Isya lewat (agar jadwal besok ke-load, bukan stuck 00:00:00 Subuh).
-  // Penting: calculateAndRender() saat ini selalu computeTimes(new Date()),
-  // sehingga butuh mekanisme agar API dipanggil untuk “hari berikutnya” saat Isya sudah lewat.
-  if (shouldResyncForNextDay()) {
-    const dayKey = `nextday_${now.getFullYear()}_${now.getMonth()}_${now.getDate()}`;
-    if (!window.__resyncNextDayDone) { window.__resyncNextDayDone = new Set(); } else if (window.__resyncNextDayDone.size > 10) { window.__resyncNextDayDone.clear(); }
+  const schedulePassed = isPrayerSchedulePassed(now);
+  if (schedulePassed) loadNextDayPrayerSchedule(now);
 
-    if (!window.__resyncNextDayDone.has(dayKey)) {
-      window.__resyncNextDayDone.add(dayKey);
-
-      // Paksa hitung untuk besok dengan mengubah referensi tanggal
-      // (menghindari resync yang tetap memakai jadwal “hari ini”).
-      const tomorrow = new Date(now);
-      tomorrow.setDate(now.getDate() + 1);
-
-      const [lat, lng] = state.coords.split(',').map(Number);
-      const locTz = getLocationTimezoneMinutes() / 60;
-
-      document.getElementById('next-prayer-name').textContent = 'Memuat...';
-
-      PrayerCalc.computeTimes(tomorrow, lat, lng, locTz, Number(state.method))
-        .then((result) => {
-          prayers = result.prayers;
-          hijriDate = result.hijriDate;
-          renderPrayerList();
-          renderDates();
-          updateNextPrayer();
-          updateProgress();
-          scheduleNextNotification();
-          updateCountdown();
-        })
-        .catch(() => {
-          calculateAndRender().then(() => updateCountdown()).catch(() => {});
-        });
-
-      return;
-    }
-  }
-
-  // next prayer dihitung dari active prayer + 1 agar setelah Isya lewat langsung ke jadwal berikutnya.
-  const idx = (getActivePrayerIndex() + 1) % prayers.length;
+  const idx = schedulePassed ? 0 : (getActivePrayerIndex() + 1) % prayers.length;
   const p = prayers[idx];
 
   // Trigger sync setelah fase “waktu sholat” lewat.
-  if (p?.date) {
+  if (!schedulePassed && p?.date) {
     const diffMs = p.date - now;
     const twoMin = 2 * 60 * 1000;
 
@@ -993,12 +1032,19 @@ function updateCountdown() {
 
   const enableHint = state.hintShow !== false;
   let diff = p.date - now;
+  if (schedulePassed) {
+    const nextFajr = new Date(p.date);
+    nextFajr.setDate(nextFajr.getDate() + 1);
+    diff = nextFajr - now;
+    hidePrayerArrived();
+    document.getElementById('next-prayer-name').textContent = p.name;
+  }
 
   const twoMin = 2 * 60 * 1000;
 
   // Dalam 2 menit setelah waktu sholat: tampilkan "Waktunya sholat" di countdown
   const activeIdx = getActivePrayerIndex();
-  if (activeIdx >= 0) {
+  if (!schedulePassed && activeIdx >= 0) {
     const active = prayers[activeIdx];
     const sinceActive = now - active.date;
     if (sinceActive >= 0 && sinceActive < twoMin) {
@@ -1299,6 +1345,10 @@ function setupUI() {
     loadAppMeta();
     markUnsavedChanges();
   };
+  document.getElementById('theme-select').onchange = (e) => {
+    applyTheme(e.target.value);
+    markUnsavedChanges();
+  };
 
   // Cascading location selects
   document.getElementById('country-select').onchange = function(e) {
@@ -1360,6 +1410,13 @@ function setupUI() {
   document.getElementById('district-select').onchange = markUnsavedChanges;
   document.getElementById('method-select').onchange = markUnsavedChanges;
   document.getElementById('reminder-minutes').onchange = markUnsavedChanges;
+  document.getElementById('hint-show-checkbox').onchange = function() {
+    state.hintShow = this.checked;
+    document.getElementById('toggle-hint-show-wrapper').classList.toggle('on', this.checked);
+    document.getElementById('toggle-hint-show-label').textContent = this.checked ? tr().toggle.on : tr().toggle.off;
+    ipcRenderer.send('hint-feature', { hintShow: this.checked });
+    markUnsavedChanges();
+  };
 
   document.getElementById('test-adhan').onclick = () => {
     const prayerKeys = ['fajr', 'sunrise', 'dhuhr', 'asr', 'maghrib', 'isha'];
@@ -1396,12 +1453,21 @@ function setupUI() {
     }
   };
 
-  document.getElementById('optimization-checkbox').onchange = function() {
-    toggleOptimization(this.checked);
-  };
+  document.querySelectorAll('.mode-option').forEach(button => {
+    button.onclick = () => setInterfaceMode(button.dataset.mode);
+  });
 
-  document.getElementById('btn-donate').onclick = () => {
-    window.electronAPI.openExternal('https://saweria.co/Arza707');
+  document.getElementById('btn-donate').onclick = async (event) => {
+    event.preventDefault();
+    try {
+      await ipcRenderer.invoke('open-external', 'https://saweria.co/Arza707');
+    } catch (error) {
+      console.error('Unable to open donation page:', error);
+      const message = lang() === 'en'
+        ? 'Unable to open the donation page. Please try again.'
+        : 'Tidak dapat membuka halaman donasi. Silakan coba lagi.';
+      showInAppNotification(message);
+    }
   };
 }
 
@@ -1444,16 +1510,63 @@ function toggleNotif(key, val) {
   markUnsavedChanges();
 }
 
-function toggleOptimization(val) {
-  state.optimization = val;
-  document.body.classList.toggle('optimized', !!val);
-  const wrapper = document.getElementById('toggle-optimization-wrapper');
-  if (wrapper) wrapper.classList.toggle('on', val);
-  const gf = document.getElementById('google-fonts');
-  if (val && gf) gf.remove();
+function updateModeControl() {
+  const mode = state.interfaceMode || 'normal';
+  document.querySelectorAll('.mode-option').forEach(button => {
+    const selected = button.dataset.mode === mode;
+    button.classList.toggle('active', selected);
+    button.setAttribute('aria-pressed', String(selected));
+  });
+  document.getElementById('mode-description').textContent = tr().labels.modeDescriptions[mode];
+}
+
+function sendHintAppearance() {
+  ipcRenderer.send('hint-feature', {
+    hintShow: state.hintShow !== false,
+    interfaceMode: state.interfaceMode,
+    theme: state.theme,
+  });
+}
+
+function applyTheme(theme, refresh = true) {
+  state.theme = theme === 'light' ? 'light' : 'dark';
+  document.getElementById('theme-select').value = state.theme;
+  document.body.classList.toggle('theme-light', state.theme === 'light');
+  sendHintAppearance();
+
+  if (refresh) markUnsavedChanges();
+}
+
+function applyInterfaceMode(mode, refresh = true) {
+  const validMode = ['dynamic', 'normal', 'optimize'].includes(mode) ? mode : 'normal';
+  state.interfaceMode = validMode;
+  state.optimization = validMode === 'optimize';
+  document.body.classList.toggle('optimized', state.optimization);
+  document.body.classList.toggle('mode-dynamic', validMode === 'dynamic');
+  sendHintAppearance();
+
+  const fontLink = document.getElementById('google-fonts');
+  if (state.optimization) {
+    if (fontLink) fontLink.remove();
+  } else if (!fontLink) {
+    const restoredFontLink = document.createElement('link');
+    restoredFontLink.id = 'google-fonts';
+    restoredFontLink.rel = 'stylesheet';
+    restoredFontLink.href = 'https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Cairo:wght@300;400;600&display=swap';
+    const styleLink = document.querySelector('link[rel="stylesheet"][href="style.css"]');
+    document.head.insertBefore(restoredFontLink, styleLink);
+  }
+  updateModeControl();
+
+  if (!refresh) return;
   renderPrayerList();
   startCountdown();
+  updateProgress();
   markUnsavedChanges();
+}
+
+function setInterfaceMode(mode) {
+  applyInterfaceMode(mode);
 }
 
 function saveSettingsHandler() {
@@ -1505,4 +1618,3 @@ function saveSettingsHandler() {
 }
 
 init();
-

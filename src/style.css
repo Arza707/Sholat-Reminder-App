@@ -33,6 +33,24 @@ body {
   height: 680px;
 }
 
+body.theme-light {
+  --bg-main: #f3f1f7;
+  --bg-card: #ffffff;
+  --bg-card2: #e9e6ef;
+  --bg-panel: #f7f5fa;
+  --accent: #89652f;
+  --accent-dim: #a8834b;
+  --accent-glow: rgba(157, 121, 61, 0.13);
+  --text-primary: #292633;
+  --text-secondary: #625e6d;
+  --text-muted: #777282;
+  --active-prayer: #89652f;
+  --border: rgba(117, 93, 151, 0.2);
+  --border-soft: rgba(70, 61, 87, 0.1);
+  color-scheme: light;
+  color: var(--text-primary);
+}
+
 /* ── Titlebar ── */
 .titlebar {
   -webkit-app-region: drag;
@@ -529,6 +547,73 @@ select:focus {
   width: 14px; height: 14px;
 }
 
+.mode-segment {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 5px;
+  padding: 5px;
+  border: 1px solid rgba(201, 169, 110, 0.18);
+  border-radius: 13px;
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(201, 169, 110, 0.1), transparent 70%),
+    #101018;
+}
+
+.mode-option {
+  min-width: 0;
+  min-height: 58px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 8px 4px;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  color: var(--text-secondary);
+  background: transparent;
+  font-family: var(--font-sans);
+  cursor: pointer;
+  transition: color 0.2s ease, background 0.25s ease, border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.mode-option:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.mode-option.active {
+  color: var(--accent);
+  border-color: rgba(201, 169, 110, 0.32);
+  background: linear-gradient(145deg, rgba(201, 169, 110, 0.16), rgba(201, 169, 110, 0.06));
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.06), 0 4px 16px rgba(0, 0, 0, 0.18);
+}
+
+.mode-option:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.mode-option-title {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.mode-option-caption {
+  font-size: 9px;
+  line-height: 1.2;
+  opacity: 0.75;
+  white-space: nowrap;
+}
+
+.mode-description {
+  min-height: 16px;
+  color: var(--text-muted);
+  font-size: 10px;
+  line-height: 1.5;
+}
+
 .save-btn {
   background: linear-gradient(135deg, var(--accent-dim), var(--accent));
   border: none;
@@ -740,4 +825,584 @@ select:focus {
 
 .optimized select {
   transition: none !important;
+}
+
+/* Dynamic mode gives the dashboard and settings a shared, fluid visual system. */
+.mode-dynamic .titlebar {
+  background: linear-gradient(100deg, #12121b, #1a1928 52%, #141522);
+  border-bottom-color: rgba(165, 146, 216, 0.16);
+}
+
+.mode-dynamic .app-dot {
+  background: #d3b77f;
+  box-shadow: 0 0 8px rgba(211, 183, 127, 0.7), 0 0 18px rgba(153, 133, 206, 0.35);
+  animation: dynamic-dot-breathe 3s ease-in-out infinite;
+}
+
+.mode-dynamic .app-name {
+  color: #b7b2c8;
+}
+
+.mode-dynamic .container {
+  background:
+    radial-gradient(ellipse at 92% 18%, rgba(119, 105, 177, 0.12), transparent 34%),
+    radial-gradient(ellipse at 6% 82%, rgba(201, 169, 110, 0.07), transparent 35%),
+    linear-gradient(155deg, #101018 0%, #11111b 48%, #10121b 100%);
+  border-color: rgba(157, 143, 201, 0.18);
+}
+
+.mode-dynamic .location-bar {
+  border-bottom-color: rgba(157, 143, 201, 0.14);
+  background: linear-gradient(90deg, rgba(201, 169, 110, 0.035), transparent 44%, rgba(132, 115, 193, 0.055));
+}
+
+.mode-dynamic .location-icon {
+  color: #bba8e7;
+  text-shadow: 0 0 14px rgba(177, 153, 233, 0.45);
+}
+
+.mode-dynamic .settings-btn {
+  background: rgba(255, 255, 255, 0.035);
+  border-color: rgba(177, 153, 233, 0.2);
+  color: #bcb4d3;
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.045);
+}
+
+.mode-dynamic .settings-btn:hover {
+  transform: rotate(28deg);
+  border-color: rgba(201, 169, 110, 0.48);
+  color: #e4c990;
+  background: rgba(201, 169, 110, 0.1);
+  box-shadow: 0 0 20px rgba(201, 169, 110, 0.12);
+}
+
+.mode-dynamic .next-prayer-card {
+  background:
+    radial-gradient(ellipse at 92% 4%, rgba(160, 139, 218, 0.22), transparent 42%),
+    radial-gradient(ellipse at 4% 100%, rgba(201, 169, 110, 0.12), transparent 48%),
+    linear-gradient(138deg, #171722 0%, #211e33 48%, #171925 100%);
+  background-size: 160% 160%;
+  animation: dynamic-card-drift 16s ease-in-out infinite alternate;
+  border-color: rgba(190, 169, 229, 0.23);
+  box-shadow: 0 12px 34px rgba(0, 0, 0, 0.22), inset 0 1px rgba(255, 255, 255, 0.055);
+  transition: border-color 0.5s ease, box-shadow 0.5s ease, transform 0.5s ease;
+}
+
+.mode-dynamic .next-prayer-card::before {
+  width: 190px;
+  height: 190px;
+  top: -85px;
+  right: -35px;
+  background: radial-gradient(circle, rgba(201, 169, 110, 0.22), rgba(143, 123, 207, 0.16) 38%, transparent 72%);
+  filter: blur(24px);
+  animation: dynamic-glow 9s ease-in-out infinite alternate;
+}
+
+.mode-dynamic .next-label {
+  color: #aaa4bf;
+}
+
+.mode-dynamic .next-prayer-name {
+  color: #e3c88f;
+  text-shadow: 0 3px 22px rgba(201, 169, 110, 0.18);
+  transition: color 0.35s ease, text-shadow 0.35s ease;
+}
+
+.mode-dynamic .cd-num {
+  color: #f0edf7;
+  text-shadow: 0 2px 18px rgba(181, 163, 224, 0.16);
+  transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+
+.mode-dynamic .cd-sep {
+  color: #a898ce;
+  animation: dynamic-separator 2s ease-in-out infinite;
+}
+
+.mode-dynamic .clock-digits {
+  color: #d4c9ed;
+}
+
+.mode-dynamic .clock-tz {
+  color: #9990b4;
+}
+
+.mode-dynamic .progress-container {
+  height: 3px;
+  background: rgba(177, 153, 233, 0.12);
+  box-shadow: 0 0 12px rgba(153, 133, 206, 0.08);
+}
+
+.mode-dynamic .progress-bar {
+  background: linear-gradient(90deg, #92754f, #d6b77d 48%, #a898d7 100%);
+  box-shadow: 0 0 12px rgba(177, 153, 233, 0.28);
+}
+
+.mode-dynamic .prayer-list {
+  scrollbar-color: rgba(177, 153, 233, 0.3) transparent;
+}
+
+.mode-dynamic .prayer-item {
+  border-color: transparent;
+  transition: background 0.3s ease, border-color 0.3s ease, transform 0.3s ease, opacity 0.3s ease, box-shadow 0.3s ease;
+}
+
+.mode-dynamic .prayer-item:hover {
+  transform: translateX(3px);
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.mode-dynamic .prayer-item.active {
+  background: linear-gradient(100deg, rgba(201, 169, 110, 0.13), rgba(133, 116, 196, 0.1));
+  border-color: rgba(201, 169, 110, 0.16);
+  box-shadow: inset 0 0 20px rgba(201, 169, 110, 0.035), 0 5px 16px rgba(0, 0, 0, 0.1);
+}
+
+.mode-dynamic .prayer-item.active .active-indicator {
+  animation: dynamic-indicator 2.8s ease-in-out infinite;
+}
+
+.mode-dynamic .prayer-icon {
+  color: #c8b9e8;
+  background: linear-gradient(145deg, rgba(177, 153, 233, 0.12), rgba(201, 169, 110, 0.08));
+  border: 1px solid rgba(177, 153, 233, 0.1);
+  transition: transform 0.3s ease, background 0.3s ease;
+}
+
+.mode-dynamic .prayer-item:hover .prayer-icon {
+  transform: scale(1.06);
+}
+
+.mode-dynamic .prayer-item.active .prayer-icon {
+  background: linear-gradient(145deg, rgba(201, 169, 110, 0.2), rgba(133, 116, 196, 0.15));
+  border-color: rgba(201, 169, 110, 0.2);
+}
+
+.mode-dynamic .prayer-name-text {
+  transition: color 0.3s ease;
+}
+
+.mode-dynamic .prayer-time-text {
+  color: #b3abc7;
+  transition: color 0.3s ease;
+}
+
+.mode-dynamic .footer-date {
+  border-top-color: rgba(157, 143, 201, 0.13);
+  background: linear-gradient(90deg, transparent, rgba(132, 115, 193, 0.035), transparent);
+  color: #aaa3bd;
+}
+
+.mode-dynamic #app-meta {
+  color: #8f89a3;
+}
+
+.mode-dynamic .settings-panel {
+  background:
+    radial-gradient(ellipse at 100% 0%, rgba(132, 115, 193, 0.14), transparent 38%),
+    radial-gradient(ellipse at 0% 60%, rgba(201, 169, 110, 0.06), transparent 40%),
+    rgba(16, 16, 25, 0.97);
+  border-top-color: rgba(177, 153, 233, 0.23);
+  box-shadow: -18px 0 48px rgba(0, 0, 0, 0.28), inset 1px 0 rgba(255, 255, 255, 0.035);
+  backdrop-filter: blur(18px);
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), background 0.4s ease;
+}
+
+.mode-dynamic .settings-panel.open .setting-group {
+  animation: dynamic-setting-arrive 0.45s both;
+}
+
+.mode-dynamic .settings-panel.open .setting-group:nth-of-type(2) { animation-delay: 0.025s; }
+.mode-dynamic .settings-panel.open .setting-group:nth-of-type(3) { animation-delay: 0.05s; }
+.mode-dynamic .settings-panel.open .setting-group:nth-of-type(4) { animation-delay: 0.075s; }
+.mode-dynamic .settings-panel.open .setting-group:nth-of-type(5) { animation-delay: 0.1s; }
+
+.mode-dynamic .settings-header {
+  color: #d7c8f2;
+  border-bottom-color: rgba(177, 153, 233, 0.19);
+  text-shadow: 0 3px 18px rgba(177, 153, 233, 0.14);
+}
+
+.mode-dynamic .settings-header button {
+  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid rgba(177, 153, 233, 0.12);
+  transition: transform 0.25s ease, color 0.25s ease, background 0.25s ease;
+}
+
+.mode-dynamic .settings-header button:hover {
+  transform: rotate(90deg);
+  color: #e4c990;
+  background: rgba(201, 169, 110, 0.1);
+}
+
+.mode-dynamic .setting-group {
+  gap: 9px;
+  padding: 12px;
+  border: 1px solid rgba(177, 153, 233, 0.1);
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.012));
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.025);
+  transition: border-color 0.3s ease, background 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.mode-dynamic .setting-group:focus-within {
+  border-color: rgba(177, 153, 233, 0.3);
+  background: linear-gradient(135deg, rgba(132, 115, 193, 0.09), rgba(255, 255, 255, 0.02));
+  box-shadow: 0 0 20px rgba(132, 115, 193, 0.07), inset 0 1px rgba(255, 255, 255, 0.04);
+}
+
+.mode-dynamic .setting-group > label {
+  color: #aaa3bd;
+  letter-spacing: 0.1em;
+}
+
+.mode-dynamic select {
+  border-color: rgba(177, 153, 233, 0.15);
+  background: rgba(14, 14, 22, 0.88);
+  transition: border-color 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
+}
+
+.mode-dynamic select:hover,
+.mode-dynamic select:focus {
+  border-color: rgba(177, 153, 233, 0.42);
+  background: #171622;
+  box-shadow: 0 0 0 3px rgba(132, 115, 193, 0.08);
+}
+
+.mode-dynamic .toggle-item {
+  border-color: rgba(177, 153, 233, 0.13);
+  background: rgba(255, 255, 255, 0.035);
+  transition: color 0.25s ease, background 0.25s ease, border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.mode-dynamic .toggle-item:hover {
+  transform: translateY(-1px);
+  border-color: rgba(177, 153, 233, 0.32);
+  color: #ded6ef;
+}
+
+.mode-dynamic .toggle-item.on {
+  border-color: rgba(201, 169, 110, 0.34);
+  background: linear-gradient(110deg, rgba(201, 169, 110, 0.13), rgba(132, 115, 193, 0.09));
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+}
+
+.mode-dynamic .mode-segment {
+  border-color: rgba(177, 153, 233, 0.2);
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(132, 115, 193, 0.17), transparent 72%),
+    rgba(12, 12, 19, 0.7);
+}
+
+.mode-dynamic .mode-option.active {
+  background: linear-gradient(135deg, rgba(201, 169, 110, 0.2), rgba(132, 115, 193, 0.17));
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.1), 0 0 22px rgba(153, 133, 206, 0.15);
+}
+
+.mode-dynamic .mode-option:hover {
+  transform: translateY(-1px);
+}
+
+.mode-dynamic .mode-description {
+  color: #aaa3bd;
+}
+
+.mode-dynamic .settings-divider {
+  background: linear-gradient(90deg, transparent, rgba(177, 153, 233, 0.28), rgba(201, 169, 110, 0.2), transparent);
+}
+
+.mode-dynamic .save-btn {
+  color: #17141e;
+  background: linear-gradient(110deg, #c6a86f, #e0c58f 45%, #b8a5e1);
+  box-shadow: 0 7px 20px rgba(132, 115, 193, 0.12), inset 0 1px rgba(255, 255, 255, 0.4);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, filter 0.25s ease;
+}
+
+.mode-dynamic .save-btn:hover {
+  opacity: 1;
+  transform: translateY(-2px);
+  filter: saturate(1.08);
+  box-shadow: 0 10px 24px rgba(132, 115, 193, 0.2), inset 0 1px rgba(255, 255, 255, 0.45);
+}
+
+.mode-dynamic .save-btn:active {
+  transform: translateY(0) scale(0.985);
+}
+
+.mode-dynamic .app-meta-footer {
+  color: #aaa3bd;
+}
+
+.mode-dynamic .in-app-notification {
+  background: rgba(25, 23, 37, 0.96);
+  border-color: rgba(177, 153, 233, 0.26);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35), 0 0 24px rgba(132, 115, 193, 0.1);
+  backdrop-filter: blur(14px);
+}
+
+@keyframes dynamic-card-drift {
+  from { background-position: 0% 35%; }
+  to { background-position: 100% 65%; }
+}
+
+@keyframes dynamic-glow {
+  from { transform: translate(-4px, 4px) scale(0.9); opacity: 0.6; }
+  to { transform: translate(-24px, 18px) scale(1.18); opacity: 1; }
+}
+
+@keyframes dynamic-indicator {
+  0%, 100% { opacity: 0.72; box-shadow: 0 0 5px var(--accent); }
+  50% { opacity: 1; box-shadow: 0 0 12px var(--accent); }
+}
+
+@keyframes dynamic-dot-breathe {
+  0%, 100% { transform: scale(0.92); opacity: 0.8; }
+  50% { transform: scale(1.12); opacity: 1; }
+}
+
+@keyframes dynamic-separator {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+@keyframes dynamic-setting-arrive {
+  from { opacity: 0.55; transform: translateY(7px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mode-dynamic *,
+  .mode-dynamic *::before,
+  .mode-dynamic *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+body.theme-light .titlebar {
+  background: #f7f5fa;
+}
+
+body.theme-light .container {
+  background: #f3f1f7;
+}
+
+body.theme-light .next-prayer-card {
+  background: linear-gradient(135deg, #fff 0%, #efecf5 100%);
+}
+
+body.theme-light .cd-num,
+body.theme-light .clock-digits {
+  color: #292633;
+}
+
+body.theme-light .settings-panel {
+  background: #f7f5fa;
+}
+
+body.theme-light .settings-header {
+  color: #70542d;
+}
+
+body.theme-light .settings-header button:hover,
+body.theme-light .tb-btn:hover {
+  background: rgba(88, 72, 117, 0.1);
+  color: #383342;
+}
+
+body.theme-light select {
+  background: #fff;
+  color: #292633;
+}
+
+body.theme-light .toggle-item {
+  background: #fff;
+  color: #625e6d;
+}
+
+body.theme-light .in-app-notification {
+  background: #fff;
+  color: #292633;
+  box-shadow: 0 8px 26px rgba(40, 34, 54, 0.16);
+}
+
+body.theme-light .optimized .next-prayer-card {
+  background: #fff !important;
+}
+
+body.theme-light.mode-dynamic .titlebar {
+  background: linear-gradient(100deg, #faf8fc, #f1edf8 52%, #f7f5fa);
+  border-bottom-color: rgba(123, 101, 166, 0.2);
+}
+
+body.theme-light.mode-dynamic .app-name {
+  color: #625a72;
+}
+
+body.theme-light.mode-dynamic .container {
+  background:
+    radial-gradient(ellipse at 92% 18%, rgba(153, 133, 198, 0.13), transparent 34%),
+    radial-gradient(ellipse at 6% 82%, rgba(201, 169, 110, 0.11), transparent 35%),
+    linear-gradient(155deg, #f8f6fb 0%, #f2eff8 48%, #f4f5fa 100%);
+}
+
+body.theme-light.mode-dynamic .location-bar {
+  background: linear-gradient(90deg, rgba(201, 169, 110, 0.06), transparent 44%, rgba(132, 115, 193, 0.08));
+}
+
+body.theme-light.mode-dynamic .location-icon {
+  color: #79639e;
+  text-shadow: 0 0 14px rgba(137, 111, 181, 0.25);
+}
+
+body.theme-light.mode-dynamic .settings-btn {
+  color: #655b76;
+  background: rgba(255, 255, 255, 0.68);
+  border-color: rgba(123, 101, 166, 0.22);
+}
+
+body.theme-light.mode-dynamic .next-prayer-card {
+  background:
+    radial-gradient(ellipse at 92% 4%, rgba(165, 145, 210, 0.22), transparent 42%),
+    radial-gradient(ellipse at 4% 100%, rgba(201, 169, 110, 0.16), transparent 48%),
+    linear-gradient(138deg, #fff 0%, #f0ecf7 48%, #f5f3fa 100%);
+  border-color: rgba(138, 116, 179, 0.26);
+  box-shadow: 0 12px 34px rgba(67, 55, 91, 0.12), inset 0 1px #fff;
+}
+
+body.theme-light.mode-dynamic .next-label {
+  color: #777083;
+}
+
+body.theme-light.mode-dynamic .next-prayer-name {
+  color: #805c28;
+  text-shadow: 0 3px 22px rgba(157, 121, 61, 0.14);
+}
+
+body.theme-light.mode-dynamic .cd-num {
+  color: #302b3b;
+  text-shadow: 0 2px 18px rgba(111, 90, 153, 0.12);
+}
+
+body.theme-light.mode-dynamic .cd-sep,
+body.theme-light.mode-dynamic .clock-digits {
+  color: #74618f;
+}
+
+body.theme-light.mode-dynamic .clock-tz {
+  color: #777083;
+}
+
+body.theme-light.mode-dynamic .progress-container {
+  background: rgba(123, 101, 166, 0.14);
+}
+
+body.theme-light.mode-dynamic .prayer-item:hover {
+  background: rgba(255, 255, 255, 0.7);
+}
+
+body.theme-light.mode-dynamic .prayer-item.active {
+  background: linear-gradient(100deg, rgba(201, 169, 110, 0.16), rgba(133, 116, 196, 0.1));
+  border-color: rgba(137, 101, 47, 0.18);
+  box-shadow: inset 0 0 20px rgba(201, 169, 110, 0.04), 0 5px 16px rgba(67, 55, 91, 0.07);
+}
+
+body.theme-light.mode-dynamic .prayer-icon {
+  color: #756194;
+  background: linear-gradient(145deg, rgba(177, 153, 233, 0.16), rgba(201, 169, 110, 0.12));
+}
+
+body.theme-light.mode-dynamic .prayer-time-text {
+  color: #655d73;
+}
+
+body.theme-light.mode-dynamic .footer-date,
+body.theme-light.mode-dynamic #app-meta {
+  color: #716a7e;
+}
+
+body.theme-light.mode-dynamic .settings-panel {
+  background:
+    radial-gradient(ellipse at 100% 0%, rgba(132, 115, 193, 0.13), transparent 38%),
+    radial-gradient(ellipse at 0% 60%, rgba(201, 169, 110, 0.08), transparent 40%),
+    rgba(249, 247, 252, 0.97);
+  border-top-color: rgba(123, 101, 166, 0.24);
+  box-shadow: -18px 0 48px rgba(52, 43, 69, 0.13), inset 1px 0 #fff;
+}
+
+body.theme-light.mode-dynamic .settings-header {
+  color: #70558e;
+}
+
+body.theme-light.mode-dynamic .setting-group {
+  border-color: rgba(123, 101, 166, 0.15);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.76), rgba(247, 244, 251, 0.65));
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.85);
+}
+
+body.theme-light.mode-dynamic .setting-group > label {
+  color: #625b70;
+}
+
+body.theme-light.mode-dynamic select {
+  color: #302b3b;
+  border-color: rgba(123, 101, 166, 0.2);
+  background: rgba(255, 255, 255, 0.9);
+}
+
+body.theme-light.mode-dynamic select:hover,
+body.theme-light.mode-dynamic select:focus {
+  border-color: rgba(123, 101, 166, 0.45);
+  background: #fff;
+}
+
+body.theme-light.mode-dynamic .toggle-item {
+  color: #625b70;
+  border-color: rgba(123, 101, 166, 0.18);
+  background: rgba(255, 255, 255, 0.8);
+}
+
+body.theme-light.mode-dynamic .toggle-item:hover {
+  color: #393342;
+}
+
+body.theme-light.mode-dynamic .toggle-item.on {
+  color: #70542d;
+  background: linear-gradient(110deg, rgba(201, 169, 110, 0.18), rgba(132, 115, 193, 0.11));
+}
+
+body.theme-light.mode-dynamic .mode-segment {
+  background: radial-gradient(ellipse at 50% 0%, rgba(132, 115, 193, 0.12), transparent 72%), rgba(255, 255, 255, 0.72);
+}
+
+body.theme-light.mode-dynamic .mode-option.active {
+  color: #604d84;
+  background: linear-gradient(135deg, rgba(201, 169, 110, 0.2), rgba(132, 115, 193, 0.18));
+}
+
+body.theme-light.mode-dynamic .mode-description,
+body.theme-light.mode-dynamic .app-meta-footer {
+  color: #625b70;
+}
+
+body.theme-light.mode-dynamic .save-btn {
+  color: #282432;
+}
+
+body.theme-light.mode-dynamic .in-app-notification {
+  background: rgba(250, 248, 253, 0.97);
+  color: #302b3b;
+  border-color: rgba(123, 101, 166, 0.27);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.mode-dynamic *,
+  body.mode-dynamic *::before,
+  body.mode-dynamic *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
 }

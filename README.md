@@ -10,7 +10,7 @@
   <a href="https://github.com/Arza707"><img src="https://img.shields.io/badge/GitHub-Arza707-181717?style=flat-square&logo=github" alt="GitHub"></a>
 </p>
 
-**Shorem (Sholat Reminder)** is a Windows prayer time reminder app with an elegant dark design, available for **ASEAN countries** (Indonesia, Malaysia, Singapore, Brunei, Philippines, Thailand). It displays prayer schedules based on city coordinates, real-time countdown to the next prayer, Hijri calendar, native Windows notifications, and Adhan popup.
+**Shorem (Sholat Reminder)** is a Windows prayer time reminder app with an elegant dark design, available for **ASEAN countries** (Indonesia, Malaysia, Singapore, Brunei, Philippines, Thailand). It displays prayer schedules based on city coordinates, real-time countdown to the next prayer, Hijri calendar, and in-app Adhan reminders.
 
 I chose [**Electron**](https://electronjs.org) as the framework because it allows me to build a desktop app using only **HTML, CSS, and JavaScript** — no need to learn other languages like Next.js, React, or Vue.js. With [Electron](https://electronjs.org), web code runs directly as a native desktop application.
 
@@ -47,7 +47,7 @@ I chose [**Electron**](https://electronjs.org) as the framework because it allow
 - Automatic prayer times based on city coordinates
 - Real-time countdown to next prayer
 - Automatic Hijri calendar
-- Native Windows notifications + Adhan popup
+- In-app prayer notifications and Adhan popup
 - X minutes before prayer reminder
 - Minimize to System Tray (runs in background)
 - City selection: Tangerang, Jakarta, Bandung, Surabaya, Yogyakarta, + 50+ ASEAN cities
@@ -58,10 +58,12 @@ I chose [**Electron**](https://electronjs.org) as the framework because it allow
 
 ### Download App
 
+**Latest release: v1.1.0** — [View all releases](https://github.com/Arza707/Sholat-Reminder-App/releases/latest)
+
 | Version | File | Description | OS Support |
 |---------|------|-------------|------------|
-| Installer | [Download Installer](https://github.com/Arza707/Sholat-Reminder-App/raw/main/dist/Sholat%20Reminder%20Setup%201.0.0.exe) | Requires installation, finish the setup | Windows |
-| Portable | [Download Portable](https://github.com/Arza707/Sholat-Reminder-App/raw/main/dist/Sholat%20Reminder%201.0.0.exe) | Run directly, no installation needed | Windows |
+| v1.1.0 | [Download Installer](https://github.com/Arza707/Sholat-Reminder-App/releases/download/v1.1.0/Sholat%20Reminder%20Setup%201.1.0.exe) | Install Shorem on your computer | ![Windows](https://img.shields.io/badge/Windows-0078D4?style=flat-square&logo=windows&logoColor=white) |
+| v1.1.0 | [Download Portable](https://github.com/Arza707/Sholat-Reminder-App/releases/download/v1.1.0/Sholat%20Reminder%201.1.0.exe) | Run directly, no installation needed | ![Windows](https://img.shields.io/badge/Windows-0078D4?style=flat-square&logo=windows&logoColor=white) |
 
 ### Installation (For Developer)
 
@@ -100,7 +102,7 @@ npm start
 npm run build
 ```
 
-Output is in `dist/` as a portable `Sholat Reminder 1.0.0.exe` file.
+Output is in `dist/` as a portable `Sholat Reminder 1.1.0.exe` file.
 
 #### If you want to make Installer.exe
 
@@ -108,7 +110,11 @@ Output is in `dist/` as a portable `Sholat Reminder 1.0.0.exe` file.
 npm run build-installer
 ```
 
-Output is in `dist/` as a installer `Sholat Reminder Setup 1.0.0.exe` file.
+Output is in `dist/` as an installer `Sholat Reminder Setup 1.1.0.exe` file.
+
+### macOS Support
+
+Shorem currently supports Windows only. The build configuration targets Windows x64, and the app includes Windows-specific startup behavior. A macOS build has not been configured or tested, so the Windows `.exe` files cannot run natively on macOS.
 
 
 ### Credits

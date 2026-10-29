@@ -1,4 +1,4 @@
-const { app, BrowserWindow, Tray, Menu, nativeImage, Notification, ipcMain, screen } = require('electron');
+const { app, BrowserWindow, Tray, Menu, nativeImage, ipcMain, screen, shell } = require('electron');
 const path = require('path');
 const { setRunKey } = require('./src/startup');
 
@@ -37,6 +37,9 @@ let tray;
 let adhanWindow;
 let hintWindow;
 let hintHoverActive = false;
+let hintEnabled = true;
+let hintHideTimeout = null;
+let hintAppearance = { interfaceMode: 'normal', theme: 'dark' };
 let hintData = {
   title: 'Sholat Reminder',
   body: 'Gerakkan kursor ke bagian atas layar untuk melihat info sholat berikutnya.',
@@ -191,6 +194,24 @@ function createTray() {
   ipcMain.on('hint-data', (event, data) => {
     updateHintContent(data);
   });
+
+  ipcMain.on('hint-feature', (event, data) => {
+    hintEnabled = data?.hintShow !== false;
+    hintAppearance = {
+      interfaceMode: ['dynamic', 'normal', 'optimize'].includes(data?.interfaceMode)
+        ? data.interfaceMode
+        : hintAppearance.interfaceMode,
+      theme: data?.theme === 'light' || data?.theme === 'dark'
+        ? data.theme
+        : hintAppearance.theme,
+    };
+    updateHintAppearance();
+    if (!hintEnabled) hideHintWindow();
+  });
+
+  ipcMain.on('hint-hide', () => {
+    hideHintWindow();
+  });
 }
 
 function ensureAdhanWindow() {
@@ -251,9 +272,12 @@ function ensureHintWindow() {
     },
   });
 
-  hintWindow.setIgnoreMouseEvents(true);
+  hintWindow.setIgnoreMouseEvents(false);
   hintWindow.loadFile(path.join(__dirname, 'src', 'hint.html'))
-    .then(() => updateHintContent(hintData))
+    .then(() => {
+      updateHintContent(hintData);
+      updateHintAppearance();
+    })
     .catch(() => {});
 
   hintWindow.on('closed', () => {
@@ -274,12 +298,23 @@ function updateHintContent(data) {
   }
 }
 
+function updateHintAppearance() {
+  if (hintWindow && hintWindow.webContents && !hintWindow.isDestroyed()) {
+    hintWindow.webContents.send('hint-appearance', hintAppearance);
+  }
+}
+
 function showHintWindow({ title, body }) {
   hintData = { title, body };
+  if (hintHideTimeout) {
+    clearTimeout(hintHideTimeout);
+    hintHideTimeout = null;
+  }
 
   const win = ensureHintWindow();
   if (win && win.webContents) {
     win.webContents.send('hint-update', hintData);
+    win.webContents.send('hint-appearance', hintAppearance);
     win.webContents.send('hint-show');
     if (!win.isVisible()) win.showInactive();
   }
@@ -288,11 +323,13 @@ function showHintWindow({ title, body }) {
 function hideHintWindow() {
   if (hintWindow && hintWindow.webContents && !hintWindow.isDestroyed()) {
     hintWindow.webContents.send('hint-hide');
-    setTimeout(() => {
+    if (hintHideTimeout) clearTimeout(hintHideTimeout);
+    hintHideTimeout = setTimeout(() => {
       if (hintWindow && !hintWindow.isDestroyed()) {
         hintWindow.hide();
       }
-    }, 220);
+      hintHideTimeout = null;
+    }, 360);
   }
 
   hintHoverActive = false;
@@ -300,12 +337,25 @@ function hideHintWindow() {
 
 function startHintMonitor() {
   setInterval(() => {
+    if (!hintEnabled) {
+      if (hintHoverActive) hideHintWindow();
+      return;
+    }
+
     const cursor = screen.getCursorScreenPoint();
     const display = screen.getDisplayNearestPoint(cursor);
     const centerX = display.bounds.x + display.bounds.width / 2;
     const isTopCenter = cursor.y <= display.bounds.y + 20 && Math.abs(cursor.x - centerX) <= 180;
+    const hintBounds = hintWindow && !hintWindow.isDestroyed() && hintWindow.isVisible()
+      ? hintWindow.getBounds()
+      : null;
+    const isOverHint = hintBounds
+      && cursor.x >= hintBounds.x
+      && cursor.x <= hintBounds.x + hintBounds.width
+      && cursor.y >= hintBounds.y
+      && cursor.y <= hintBounds.y + hintBounds.height;
 
-    if (isTopCenter) {
+    if (isTopCenter || isOverHint) {
       if (!hintHoverActive) {
         hintHoverActive = true;
         showHintWindow(hintData);
@@ -337,43 +387,7 @@ function showAdhan(payload) {
     lang: payload.lang === 'en' ? 'en' : 'id',
   };
 
-  // Gunakan title/body yang sudah ter-localize dari renderer.
-  // Hindari fallback Indonesia saat user sudah memilih English.
-  const localizedTitle = safe.title
-    ? safe.title
-    : (safe.lang === 'en'
-        ? `🔔 Prayer Time ${safe.name}`
-        : `🔔 Waktu Sholat ${safe.name}`);
-  const localizedBody = safe.body
-    ? safe.body
-    : (safe.lang === 'en'
-        ? `Allahu Akbar — It's time for prayer ${safe.name}`
-        : `Allahu Akbar — Saatnya menunaikan sholat ${safe.name}${safe.time ? ` (${safe.time})` : ''}`);
-
-  // 1) Tray balloon (best effort)
-  try {
-    if (tray) {
-      tray.displayBalloon({
-        title: localizedTitle,
-        content: localizedBody,
-        iconType: 'custom',
-        icon: path.join(__dirname, 'assets', 'icon.png'),
-      });
-    }
-  } catch {}
-
-  // 2) Windows Notification (best effort)
-  try {
-    if (Notification.isSupported()) {
-      new Notification({
-        title: localizedTitle,
-        body: localizedBody,
-        icon: path.join(__dirname, 'assets', 'icon.png'),
-      }).show();
-    }
-  } catch {}
-
-  // 3) Guaranteed fallback popup window (always shows)
+  // Use one in-app popup so Windows/tray notifications cannot duplicate it.
   const win = ensureAdhanWindow();
   const query = {
     name: safe.name,
@@ -400,35 +414,7 @@ ipcMain.on('close-window', () => mainWindow.hide());
 
 
 ipcMain.on('show-notification', (event, { title, body }) => {
-  // Tray balloon
-  try {
-    if (tray) {
-      tray.displayBalloon({
-        title,
-        content: body,
-        iconType: 'custom',
-        icon: path.join(__dirname, 'assets', 'icon.png'),
-      });
-    }
-  } catch {}
-
-  // Windows Notification
-  try {
-    if (Notification.isSupported()) {
-      const notif = new Notification({
-        title,
-        body,
-        icon: path.join(__dirname, 'assets', 'icon.png'),
-        silent: false,
-        timeoutType: 'default',
-      });
-      notif.show();
-      notif.on('click', () => {
-        mainWindow.show();
-        mainWindow.focus();
-      });
-    }
-  } catch {}
+  showAdhan({ name: 'Sholat', time: '', title, body, lang: 'id' });
 });
 
 // Tray balloon (popup kecil di taskbar) khusus waktu sholat tiba
@@ -440,6 +426,14 @@ ipcMain.handle('get-app-info', () => ({
   version: app.getVersion(),
   credits: 'Made by Arza Maulana Zafar',
 }));
+
+ipcMain.handle('open-external', async (_event, target) => {
+  const url = new URL(String(target));
+  if (url.protocol !== 'https:' || url.hostname !== 'saweria.co' || url.pathname !== '/Arza707') {
+    throw new Error('External URL is not allowed');
+  }
+  await shell.openExternal(url.toString());
+});
 
 ipcMain.on('restart-app', () => {
   app.relaunch();

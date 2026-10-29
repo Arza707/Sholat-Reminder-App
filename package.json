@@ -1,6 +1,6 @@
 {
   "name": "sholat-reminder",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Pengingat Waktu Sholat - Windows Desktop App",
   "main": "main.js",
   "scripts": {
@@ -41,6 +41,8 @@
     },
     "files": [
       "**/*",
+      "!dist/**",
+      "!dist-*/**",
       "!node_modules/.cache",
       "!*.md"
     ],
@@ -55,4 +57,3 @@
     ]
   }
 }
-
